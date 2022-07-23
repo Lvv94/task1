@@ -24,16 +24,12 @@ resource "aws_iam_user" "multiuser" {
     "lisa",
   ])
 }
-resource "aws_iam_group" "multigroup" {
-  name = each.key
-  for_each = toset([
-    "Sales",
-    "Marketing",
-    "Billing",
-  ])
-}
-
 resource "aws_key_pair" "evolvecyber" {
   key_name   = "evolvecyber-key"
   public_key = file("~/.ssh/id_rsa.pub")
+}
+
+
+resource "aws_s3_bucket" "b" {
+  bucket_prefix = "my-tf-test-bucket"
 }
