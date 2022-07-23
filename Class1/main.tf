@@ -2,7 +2,7 @@ resource "aws_iam_user" "user1" {
   name = "user1"
 }
 resource "aws_iam_group" "evolvecyber" {
-  name = "evolvecyber"
+  	name = "evolvecyber"
 }
 
 
@@ -22,5 +22,13 @@ resource "aws_iam_user" "multiuser" {
 	"bob",
 	"sam",
 	"lisa",
+	])
+}
+resource "aws_iam_group" "multigroup" {
+  	name = each.key
+	for_each = toset([
+	"Sales",
+	"Marketing",
+	"Billing",
 	])
 }
