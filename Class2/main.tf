@@ -18,8 +18,8 @@ data "aws_ami" "ubuntu" {
 
 
 resource "aws_key_pair" "evolvecyber" {
-  key_name_prefix   = "evolvecyber-key"
-  public_key = file("~/.ssh/id_rsa.pub")
+  key_name_prefix = "evolvecyber-key"
+  public_key      = file("~/.ssh/id_rsa.pub")
 }
 
 resource "aws_security_group" "terraform-allow_tls" {
@@ -27,34 +27,34 @@ resource "aws_security_group" "terraform-allow_tls" {
   description = "Allow TLS inbound traffic"
 
   ingress {
-    description      = "TLS from VPC"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    description = "TLS from VPC"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    description      = "TLS from VPC"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    description = "TLS from VPC"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    description      = "TLS from VPC"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    description = "TLS from VPC"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
 }
@@ -64,12 +64,23 @@ resource "aws_security_group" "terraform-allow_tls" {
 
 
 resource "aws_instance" "web" {
-    #   count = 5
-    #   associate_public_ip_address = false
-    #   availability_zone = "us-east-1a"
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "t3.micro"
-  key_name = aws_key_pair.evolvecyber.key_name
-  user_data = file("wordpress.sh")
+  #   count = 5
+  #   associate_public_ip_address = false
+  availability_zone      = "us-east-1a"
+  ami                    = data.aws_ami.ubuntu.id
+  instance_type          = "t3.micro"
+  key_name               = aws_key_pair.evolvecyber.key_name
+  user_data              = file("wordpress.sh")
   vpc_security_group_ids = [aws_security_group.terraform-allow_tls.id]
+}
+
+resource "aws_ebs_volume" "example" {
+  availability_zone = "us-east-1a"
+  size              = 100
+}
+
+resource "aws_volume_attachment" "ebs_att" {
+  device_name = "/dev/sdh"
+  volume_id   = aws_ebs_volume.example.id
+  instance_id = aws_instance.web.id
 }
