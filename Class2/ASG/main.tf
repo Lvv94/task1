@@ -1,3 +1,7 @@
+# Pull all AZ from this region
+data "aws_availability_zones" "all" {}
+
+
 module "asg" {
   source  = "terraform-aws-modules/autoscaling/aws"
   name = "example-asg"
@@ -7,7 +11,7 @@ module "asg" {
   desired_capacity          = 3
   wait_for_capacity_timeout = 0
   health_check_type         = "EC2"
-  availability_zones	= [ "us-east-1a", "us-east-1b"]
+  availability_zones	=  data.aws_availability_zones.all.names  # Use all AZs from this region
 
   # Launch template
   launch_template_name        = "example-asg"
