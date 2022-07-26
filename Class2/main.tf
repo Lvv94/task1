@@ -15,8 +15,6 @@ data "aws_ami" "ubuntu" {
 }
 
 
-
-
 resource "aws_key_pair" "evolvecyber" {
   key_name_prefix = "evolvecyber-key"
   public_key      = file("~/.ssh/id_rsa.pub")
@@ -61,9 +59,6 @@ resource "aws_security_group" "terraform-allow_tls" {
   tags = local.common_tags
 
 }
-
-
-
 
 
 resource "aws_instance" "web" {
