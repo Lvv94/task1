@@ -20,6 +20,8 @@ data "aws_ami" "ubuntu" {
 resource "aws_key_pair" "evolvecyber" {
   key_name_prefix = "evolvecyber-key"
   public_key      = file("~/.ssh/id_rsa.pub")
+  tags            = local.common_tags
+
 }
 
 resource "aws_security_group" "terraform-allow_tls" {
@@ -56,6 +58,7 @@ resource "aws_security_group" "terraform-allow_tls" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  tags = local.common_tags
 
 }
 
@@ -72,11 +75,15 @@ resource "aws_instance" "web" {
   key_name               = aws_key_pair.evolvecyber.key_name
   user_data              = file("wordpress.sh")
   vpc_security_group_ids = [aws_security_group.terraform-allow_tls.id]
+  tags                   = local.common_tags
+
 }
 
 resource "aws_ebs_volume" "example" {
   availability_zone = "us-east-1a"
   size              = 100
+  tags              = local.common_tags
+
 }
 
 resource "aws_volume_attachment" "ebs_att" {
