@@ -29,6 +29,7 @@ resource "azurerm_network_interface" "main" {
   }
 }
 
+
 resource "azurerm_virtual_machine" "main" {
   name                  = "my-vm"
   location              = azurerm_resource_group.example.location
